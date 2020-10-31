@@ -3,7 +3,7 @@ import cv2
 import os
 
 TRAIN_DIR = "C:/Users/RIDZZ ZOLDYCK/Desktop/pneumonia_data/chest_xray/train"
-VAL_DIR = "C:/Users/RIDZZ ZOLDYCK/Desktop/pneumonia_data/chest_xray/val"
+#VAL_DIR = "C:/Users/RIDZZ ZOLDYCK/Desktop/pneumonia_data/chest_xray/val"
 TEST_DIR = "C:/Users/RIDZZ ZOLDYCK/Desktop/pneumonia_data/chest_xray/test"
 
 CATEGORIES = ["NORMAL" , "PNEUMONIA"]
@@ -12,7 +12,7 @@ img_size = 150
 
 train_data = []
 test_data = []
-val_data = []
+#val_data = []
 
 def create_training_data():
     for category in CATEGORIES:
@@ -25,16 +25,6 @@ def create_training_data():
             train_data.append([img_arr , class_num])
             
 
-def create_validation_data():
-    for category in CATEGORIES:
-        path = os.path.join(VAL_DIR,category)
-        class_num = CATEGORIES.index(category)
-
-        for img in os.listdir(path):
-            img_arr = cv2.imread(os.path.join(path,img) , cv2.IMREAD_GRAYSCALE)
-            img_arr = cv2.resize(img_arr , (img_size , img_size))
-            val_data.append([img_arr , class_num])
-            
 
 
 def create_test_data():
@@ -50,12 +40,10 @@ def create_test_data():
             
 
 create_training_data()
-create_validation_data()
 create_test_data()
 
 
 print(" \n\nNumber of images in Training Dataset : " , len(train_data))
-print(" \n\nNumber of images in Validation Dataset : " , len(val_data))
 print(" \n\nNumber of images in Test Dataset : " , len(test_data))
 
 
@@ -63,7 +51,7 @@ print(" \n\nNumber of images in Test Dataset : " , len(test_data))
 import random
 random.shuffle(train_data)
 random.shuffle(test_data)
-random.shuffle(val_data)
+
 
 
 print(" \n\n Some labels after shuffling : " )
@@ -76,9 +64,7 @@ print("\nTest Data : ")
 for sample in test_data[:5]:
     print(sample[1])
 
-print("\nValidation Data : ")
-for sample in val_data[:5]:
-    print(sample[1])
+
 
 
 
@@ -88,8 +74,6 @@ y_train = []
 x_test = []
 y_test = []
 
-x_val = []
-y_val = []
 
 
 
@@ -102,15 +86,12 @@ for features , label in test_data :
     x_test.append(features)
     y_test.append(label)
 
-for features , label in val_data :
-    x_val.append(features)
-    y_val.append(label)
 
 
 
 x_train = np.array(x_train).reshape(-1,img_size,img_size,1)
 x_test = np.array(x_test).reshape(-1,img_size,img_size,1)
-x_val = np.array(x_val).reshape(-1,img_size,img_size,1)
+
 
 
 
@@ -128,9 +109,7 @@ pickle.dump(x_test , pickle_out)
 pickle_out.close()
 
 
-pickle_out = open("X_VAL.pickle" , "wb")
-pickle.dump(x_val , pickle_out)
-pickle_out.close()
+
 
 
 pickle_out = open("Y_TRAIN.pickle" , "wb")
@@ -142,9 +121,6 @@ pickle.dump(y_test , pickle_out)
 pickle_out.close()
 
 
-pickle_out = open("Y_VAL.pickle" , "wb")
-pickle.dump(y_val , pickle_out)
-pickle_out.close()
 
 
 
